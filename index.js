@@ -3,7 +3,7 @@ var express = require('express'),
     // Handle user commands
     commands = require('./commands'),
     app = express(),
-    TOKEN = process.env.TOKEN;
+    TOKEN = process.env.TOKEN ? JSON.parse(process.env.TOKEN) : [];
 
 app.set('port', (process.env.PORT || 5000));
 app.use(express.static(__dirname + '/public'));
@@ -15,7 +15,7 @@ app.get('/', function(request, response) {
 });
 
 function _validateRequest (req, res, next) {
-  if (req.body.token === TOKEN) {
+  if (TOKEN.indexOf(req.body.token) !== -1) {
     next();
   } else {
     res.status(401).send("Unauthorized");
