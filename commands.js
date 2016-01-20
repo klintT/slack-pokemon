@@ -137,6 +137,10 @@ module.exports = exports = (function () {
         .then(function(text){
           res.send(buildResponse(text));
         });
+      }))
+      .addCommand(new Command('DEFAULT', null,
+        /(.*)/, function (match, req, res) {
+          res.send(buildResponse(''));
       }));
 
     return cmds;
