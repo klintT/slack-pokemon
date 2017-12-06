@@ -20,4 +20,4 @@ pipelines:
              - export FOLDER=`date +%s`
              - ssh $USER@rejectcode.com "mkdir ${FOLDER}"
              - scp -r [!.]* $USER@rejectcode.com:~/${FOLDER}/.
-             - ssh $USER@rejectcode.com "ln -sfn ~/${FOLDER} ~/pkmn_app"
+             - ssh $USER@rejectcode.com "ln -sfn ~/${FOLDER} ~/pkmn_app; cd ~/pkmn_app; npm install"
