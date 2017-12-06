@@ -4,14 +4,16 @@
   "description": "A sample Node.js app using Express 4",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "pm2 start index.js -i max -name=\"Slack Pokemon\"",
+    "restart": "pm2 restart all"
   },
   "dependencies": {
-    "express": ">=4.0.0",
     "body-parser": "*",
-    "request": "*",
+    "express": ">=4.0.0",
+    "pm2": "^2.8.0",
+    "q": ">=1.0.1",
     "redis": ">= 0.10.3",
-    "q": ">=1.0.1"
+    "request": "*"
   },
   "engines": {
     "node": "9.x.x"

@@ -17,4 +17,7 @@ pipelines:
     deploy:
       - step:
           script:
+             - export FOLDER=`date +%s`
+             - ssh $USER@rejectcode.com "mkdir $FOLDER"
              - scp -r . $USER@rejectcode.com:~/`date +%s`/.
+             - ssh $USER@rejectcode.com "ln -sf ~/$FOLDER ~/pkmn_app"
