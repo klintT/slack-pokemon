@@ -13,3 +13,8 @@ pipelines:
         script: # Modify the commands below to build your repository.
           - npm install
           - npm test
+  custom:
+    deploy:
+      - step:
+          script:
+             - scp -r . $USER@rejectcode.com:~/`date +%s`/.
