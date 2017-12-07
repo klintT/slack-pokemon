@@ -4,7 +4,8 @@ var request = require('request'),
     P = new Pokedex({
       protocol: 'https',
       hostName: 'pokeapi.co:443',
-      versionPath: '/api/v2/'
+      versionPath: '/api/v2/',
+      timeout: 45 * 1000
     });
 
 module.exports = {}
