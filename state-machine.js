@@ -12,7 +12,7 @@ if(redisUrl) {
   var rtg   = new URL(redisUrl);
   redis = require("redis").createClient(rtg.port, rtg.hostname);
 
-  if (rtg.auth) {
+  if (rtg.password) {
     console.log("pass: " + rtg.password)
     redis.auth(rtg.password);
   }
