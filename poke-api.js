@@ -10,7 +10,7 @@ module.exports.getPokemon = function(name) {
     P.getPokemonByName(name)
       .then(function (response) {
         console.log("pokemon found: ", response);
-        return JSON.parse(response);
+        return response;
       })
       .catch(function(error) {
         console.log(error);
@@ -35,7 +35,7 @@ module.exports.getMove = function(urlPart) {
   return Q(
     P.resource(urlPart)
       .then(function(data) {
-        return JSON.parse(data);
+        return data;
       })
       .catch(function(error) {
         console.log(error);
@@ -58,7 +58,7 @@ module.exports.getAttackMultiplier = function(offensive, defensive1, defensive2)
   return Q(
     P.getTypeByName(offensive.toLowerCase())
       .then(function(typeData) {
-        var d = JSON.parse(body),
+        var d = typeData,
             ineffective = d.ineffective.map(function(val){return val.name}),
             noeffect = d.no_effect.map(function(val){return val.name}),
             supereffective = d.super_effective.map(function(val){return val.name});
