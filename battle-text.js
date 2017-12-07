@@ -107,7 +107,7 @@ module.exports.choosePokemon = function(_game, _trainer, pokemon) {
     textString = textString.replace("{hp}", pokeData.hp);
     textString = textString.replace("{moves}", pokeData.moveString);
 
-    var spriteUrl = getSpriteUrl(pokeData.pkdx_id);
+    var spriteUrl = pokeData.default_sprite;
 
     return {
       text: textString,
@@ -285,7 +285,10 @@ var addPokemon = function(game, trainer, pokemon) {
   },
 
   getMoveSet = function() {
-    return getRandomMoveSet(pkmnData.moves, game, trainer.name, pkmnData.name)
+    return getRandomMoveSet(
+      pkmnData.moves.map(function (m) {
+        return m.move;
+      }), game, trainer.name, pkmnData.name)
     .then(function(moveString) {
       pkmnData.moveString = moveString;
       return pkmnData;
@@ -302,7 +305,7 @@ function _getMoveFromPokeApi(moveList, i, totalMoves, maxMoves, game, trainerNam
     return totalMoves.join(', ') + '.';
   }
 
-  return pokeapi.getMove(moveList[i].resource_uri)
+  return pokeapi.getMove(moveList[i].name)
     .then(function (move) {
       var pchain = Q();
       move.type = moves.getMoveType(move.name.toLowerCase());
@@ -451,7 +454,7 @@ var doDamage = function(moveData, game, trainerName, otherName) {
   },
 
   getTypeMultiplier = function(types) {
-    return pokeapi.getAttackMultiplier(moveData.type, types[0], types[1])
+    return pokeapi.getAttackMultiplier(moveData.type.name, types[0], types[1])
     .then( function(_multiplier) { multiplier = _multiplier; } )
   },
 
@@ -488,7 +491,7 @@ var doDamage = function(moveData, game, trainerName, otherName) {
 
     var stab = 1;
     attackingPokemon.types.forEach(function( type ) {
-      if( type.name == moveData.type ) {
+      if( type.name == moveData.type.name ) {
         stab = 1.5;
       }
     });

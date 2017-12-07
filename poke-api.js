@@ -12,9 +12,24 @@ module.exports = {}
 module.exports.getPokemon = function(name) {
   return Q(
     P.getPokemonByName(name)
-      .then(function (response) {
-        console.log("pokemon found: ", response);
-        return response;
+      .then(function (pkdata) {
+        console.log("pokemon found: ", pkdata);
+        for (i = 0; i < pkdata.stats.length; i++) {
+          var stat = pkdata.stats[i];
+          if (stat.stat.name == "hp") {
+            pkdata.hp = stat.base_stat;
+          } else if (stat.stat.name == "attack") {
+            pkdata.attack = stat.base_stat;
+          } else if (stat.stat.name == "defense") {
+            pkdata.defense = stat.base_stat;
+          } else if (stat.stat.name == "special-attack") {
+            pkdata.sp_attack = stat.base_stat;
+          } else if (stat.stat.name == "special-defense") {
+            pkdata.sp_defense = stat.base_stat;
+          }
+        }
+        pkdata.default_sprite = pkdata.sprites.front_default;
+        return pkdata;
       })
       .catch(function(error) {
         console.log(error);
@@ -35,17 +50,17 @@ module.exports.getSprite = function(url) {
   return deferred.promise;
 }
 
-module.exports.getMove = function(urlPart) {
-  var deferred = Q.defer();
-  P.resource(urlPart, function(data, error) {
-    if (!error) {
-      deferred.resolve(data);
-    } else {
-      console.log(error);
-      deferred.reject(new Error("Error Getting Move"));
-    }
-  })
-  return deferred.promise;
+module.exports.getMove = function(name) {
+  return Q(
+    P.getMoveByName(name)
+      .then(function (data) {
+        return data;
+      })
+      .catch(function(error) {
+        console.log(error);
+        throw new Error("Error Getting Move");
+      })
+  );
 }
 
 /*
