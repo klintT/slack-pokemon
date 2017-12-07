@@ -16,11 +16,12 @@ pipelines:
   custom:
     deploy:
       - step:
+          name: Deploy to Prod
+          deployment: prod
           script:
              - export FOLDER=`date +%s`
              - ssh $USER@rejectcode.com "mkdir ${FOLDER}"
              - scp -r [!.]* $USER@rejectcode.com:~/${FOLDER}/.
              - ssh $USER@rejectcode.com "ln -sfn ~/${FOLDER} ~/pkmn_app"
-      - step:
-          script:
              - ssh $USER@rejectcode.com "cd ~/pkmn_app; npm install; env PORT=\"${PORT}\" TOKEN=\"${TOKEN}\" REDIS_URL=\"${REDIS_URL}\" npm start"
+             
