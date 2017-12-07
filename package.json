@@ -4,7 +4,7 @@
   "description": "A sample Node.js app using Express 4",
   "main": "index.js",
   "scripts": {
-    "start": "if [ \"`pm2 id \"Slack Pokemon\"`\" == \"[]\" ]; then pm2 start index.js --name=\"Slack Pokemon\"; else pm2 restart \"Slack Pokemon\"; fi",
+    "start": "if [ \"`pm2 id \"Slack Pokemon\"`\" == \"[]\" ]; then pm2 start index.js --name=\"Slack Pokemon\"; else pm2 restart --update-env \"Slack Pokemon\"; fi",
     "restart": "pm2 restart \"Slack Pokemon\""
   },
   "dependencies": {
