@@ -17,7 +17,7 @@ pipelines:
     deploy:
       - step:
           name: Deploy to Prod
-          deployment: prod
+          deployment: production
           script:
              - export FOLDER=`date +%s`
              - ssh $USER@rejectcode.com "mkdir ${FOLDER}"
