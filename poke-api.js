@@ -1,18 +1,22 @@
 var request = require('request'),
-    Q = require('q');
+    Q = require('q'),
+    Pokedex = require('pokedex-promise-v2'),
+    P = new Pokedex();
 
 module.exports = {}
 
 module.exports.getPokemon = function(name) {
-  var deferred = Q.defer();
-  request("https://pokeapi.co/api/v2/pokemon/"+name, function (error, response, body) {
-    if (response.statusCode == 200) {
-      deferred.resolve(JSON.parse(body));
-    } else {
-      deferred.reject(new Error("Error Getting Pokemon: " + name));
-    }
-  })
-  return deferred.promise;
+  return Q(
+    P.getPokemonByName(name)
+      .then(function (response) {
+        console.log("pokemon found: ", response);
+        return JSON.parse(response);
+      })
+      .catch(function(error) {
+        console.log(error);
+        throw new new Error("Error Getting Pokemon: " + name);
+      })
+    );
 }
 
 module.exports.getSprite = function(url) {
@@ -27,16 +31,17 @@ module.exports.getSprite = function(url) {
   return deferred.promise;
 }
 
-module.exports.getMove = function(url) {
-  var deferred = Q.defer();
-  request(url, function (error, response, body) {
-    if (response.statusCode == 200) {
-      deferred.resolve(JSON.parse(body));
-    } else {
-      deferred.reject(new Error("Error Getting Move"));
-    }
-  })
-  return deferred.promise;
+module.exports.getMove = function(urlPart) {
+  return Q(
+    P.resource(urlPart)
+      .then(function(data) {
+        return JSON.parse(data);
+      })
+      .catch(function(error) {
+        console.log(error);
+        throw new Error("Error Getting Move");
+      })
+    );
 }
 
 /*
@@ -48,45 +53,26 @@ module.exports.getMove = function(url) {
 * then we can go through and calculate the damage multiplier based on the three arrays.
 */
 module.exports.getAttackMultiplier = function(offensive, defensive1, defensive2) {
-  var multiplier = 1,
-      typesArray = [
-        "normal", //1
-        "fighting",
-        "flying",
-        "poison",
-        "ground",
-        "rock",
-        "bug",
-        "ghost",
-        "steel",
-        "fire",
-        "water",
-        "grass",
-        "electric",
-        "psychic",
-        "ice",
-        "dragon",
-        "dark",
-        "fairy" //18
-      ],
-      typeID = typesArray.indexOf(offensive.toLowerCase()) + 1,
-      deferred = Q.defer();
-  request("https://pokeapi.co/api/v2/type/"+typeID, function(error, response, body){
-    if(response.statusCode == 200) {
-      var d = JSON.parse(body),
-          ineffective = d.ineffective.map(function(val){return val.name}),
-          noeffect = d.no_effect.map(function(val){return val.name}),
-          supereffective = d.super_effective.map(function(val){return val.name});
-      [defensive1, defensive2].forEach(function(type){
-        if(ineffective.indexOf(type) !== -1) { multiplier *= 0.5; }
-        if(noeffect.indexOf(type) !== -1) { multiplier *= 0; }
-        if(supereffective.indexOf(type) !== -1) { multiplier *= 2; }
-      });
-      deferred.resolve(multiplier);
-    } else {
-      deferred.reject(new Error("Error accessing API while getting type."));
-    }
-  })
+  var multiplier = 1;
 
-  return deferred.promise;
+  return Q(
+    P.getTypeByName(offensive.toLowerCase())
+      .then(function(typeData) {
+        var d = JSON.parse(body),
+            ineffective = d.ineffective.map(function(val){return val.name}),
+            noeffect = d.no_effect.map(function(val){return val.name}),
+            supereffective = d.super_effective.map(function(val){return val.name});
+        [defensive1, defensive2].forEach(function(type){
+          if(ineffective.indexOf(type) !== -1) { multiplier *= 0.5; }
+          if(noeffect.indexOf(type) !== -1) { multiplier *= 0; }
+          if(supereffective.indexOf(type) !== -1) { multiplier *= 2; }
+        });
+
+        return multiplier;
+      })
+      .catch(function(error) {
+        console.log(error);
+        throw new Error("Error accessing API while getting type.");
+      })
+    );
 }

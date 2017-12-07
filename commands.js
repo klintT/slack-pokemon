@@ -55,6 +55,7 @@ module.exports = exports = (function () {
         battleText.choosePokemon(req.body.user_name, req.body.user_name, [match[1]])
         .then(
           function(chosenObject){
+            console.log(chosenObject);
             res.send(buildResponse(chosenObject.text + '\n' + chosenObject.spriteUrl));
           },
           function(err){
@@ -86,7 +87,7 @@ module.exports = exports = (function () {
             res.send(buildResponse(startObj.text + "\n" + startObj.spriteUrl))
           },
           function(err) {
-            console.log(err);
+            console.error("Had an error:", err);
             res.send(buildResponse("Something went wrong. "+err));
           }
         )

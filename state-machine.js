@@ -24,12 +24,12 @@ if(redisUrl) {
 
 /* Turn Redis Methods Into Promise-returning Ones */
 QRedis = {};
-QRedis.exists = Q.nbind(redis.exists, redis);
-QRedis.set = Q.nbind(redis.set, redis);
-QRedis.get = Q.nbind(redis.get, redis);
-QRedis.del = Q.nbind(redis.del, redis);
-QRedis.hmset = Q.nbind(redis.hmset, redis);
-QRedis.hgetall = Q.nbind(redis.hgetall, redis);
+QRedis.exists = Q.denodeify(redis.exists.bind(redis));
+QRedis.set = Q.denodeify(redis.set.bind(redis));
+QRedis.get = Q.denodeify(redis.get.bind(redis));
+QRedis.del = Q.denodeify(redis.del.bind(redis));
+QRedis.hmset = Q.denodeify(redis.hmset.bind(redis));
+QRedis.hgetall = Q.denodeify(redis.hgetall.bind(redis));
 
 module.exports = {};
 

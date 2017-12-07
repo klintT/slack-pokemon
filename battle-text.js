@@ -120,7 +120,7 @@ module.exports.choosePokemon = function(_game, _trainer, pokemon) {
   };
 
 
-  return Q.fcall( getGame )
+  return Q( getGame() )
   .then( getTrainer )
   .then( addAllPokemon )
   .then( saveGame )
@@ -182,7 +182,7 @@ module.exports.doTurn = function(moveName, slackData) {
 module.exports.unrecognizedCommand = function(cmd) {
   var textString = "I don't recognize the command _{cmd}_ .";
   textString = textString.replace("{cmd}", cmd);
-  return Q.fcall(function(){ return textString; });
+  return Q(textString);
 }
 
 module.exports.endBattle = function(slackData) {
@@ -259,7 +259,7 @@ var decideMoves = function(game, moveName, results) {
     }
   };
 
-  return Q.fcall( findFaster )
+  return Q( findFaster() )
   .then( doFasterMove )
   .then( saveResult )
   .then( checkForFaint )
@@ -302,7 +302,7 @@ function _getMoveFromPokeApi(moveList, i, totalMoves, maxMoves, game, trainerNam
     return totalMoves.join(', ') + '.';
   }
 
-  return pokeapi.getMove("http://pokeapi.co" + moveList[i].resource_uri)
+  return pokeapi.getMove(moveList[i].resource_uri)
     .then(function (move) {
       var pchain = Q();
       move.type = moves.getMoveType(move.name.toLowerCase());
@@ -432,7 +432,7 @@ var useMove = function(move, game, trainerName, otherName, isOpponentMove) {
     }
   }
 
-  return Q.fcall( getMoves )
+  return Q( getMoves() )
   .then( getMove )
   .then( _doDamage )
   .then( formOutcomeText )
@@ -528,7 +528,7 @@ var doDamage = function(moveData, game, trainerName, otherName) {
     return results;
   };
 
-  return Q.fcall( getPokemonType )
+  return Q( getPokemonType() )
   .then( getTypeMultiplier )
   .then( getAttackingPokemon )
   .then( getDefendingPokemon )
