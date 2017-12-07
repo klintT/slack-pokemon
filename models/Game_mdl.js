@@ -35,31 +35,31 @@ var Game = function(gameId, player1, player2, channel) {
   };
 
   self.choosePokemon = function(playerName, pokemonData) {
-     return Q.fcall (function() { return self.getPlayerByName(playerName).choosePokemon(pokemonData); });
+     return Q(self.getPlayerByName(playerName).choosePokemon(pokemonData));
   };
 
   self.chooseNextPokemon = function(playerName) {
-    return Q.fcall (function() { return self.getPlayerByName(playerName).chooseNextPokemon(); });
+    return Q(self.getPlayerByName(playerName).chooseNextPokemon());
   };
 
   self.addAllowedMove = function(playerName, pokemonName, move) {
-     return Q.fcall (function() { return self.getPlayerByName(playerName).addAllowedMove(pokemonName, move); });
+     return Q(self.getPlayerByName(playerName).addAllowedMove(pokemonName, move));
   };
 
   self.getActivePokemon = function(playerName) {
-    return Q.fcall(function() { return self.getPlayerByName(playerName).getActivePokemon() });
+    return Q(self.getPlayerByName(playerName).getActivePokemon());
   }
 
   self.getActivePokemonTypes = function(playerName) {
-    return Q.fcall(function() { return self.getPlayerByName(playerName).getActivePokemonTypes() });
+    return Q(self.getPlayerByName(playerName).getActivePokemonTypes());
   };
 
   self.getActivePokemonAllowedMoves = function(playerName){
-    return Q.fcall(function() {  return self.getPlayerByName(playerName).getActivePokemonAllowedMoves() });
+    return Q(self.getPlayerByName(playerName).getActivePokemonAllowedMoves());
   };
 
   self.damageActivePokemon = function(playerName, damage) {
-    return Q.fcall(function() { return self.getPlayerByName(playerName).damageActivePokemon(damage); });
+    return Q(self.getPlayerByName(playerName).damageActivePokemon(damage));
   };
 };
 
