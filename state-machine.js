@@ -8,11 +8,12 @@ var moves = require('./file-system.js'),
 */
 var redis, redisUrl = process.env.REDISTOGO_URL || process.env.REDIS_URL;
 if(redisUrl) {
-  var rtg   = require("url").parse(redisUrl);
+  var {URL} = require("url")
+  var rtg   = new URL(redisUrl);
   redis = require("redis").createClient(rtg.port, rtg.hostname);
 
   if (rtg.auth) {
-    redis.auth(rtg.auth.split(":")[1]);
+    redis.auth(rtg.password);
   }
 } else {
   //then we're running locally
