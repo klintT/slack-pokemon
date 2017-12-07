@@ -1,7 +1,11 @@
 var request = require('request'),
     Q = require('q'),
     Pokedex = require('pokedex-promise-v2'),
-    P = new Pokedex();
+    P = new Pokedex({
+      protocol: 'https',
+      hostName: 'pokeapi.co:443',
+      versionPath: '/api/v2/'
+    });
 
 module.exports = {}
 
@@ -32,16 +36,15 @@ module.exports.getSprite = function(url) {
 }
 
 module.exports.getMove = function(urlPart) {
-  return Q(
-    P.resource(urlPart)
+  return 
+    Q(P.resource(urlPart))
       .then(function(data) {
         return data;
       })
       .catch(function(error) {
         console.log(error);
         throw new Error("Error Getting Move");
-      })
-    );
+      });
 }
 
 /*
