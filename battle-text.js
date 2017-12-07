@@ -454,7 +454,7 @@ var doDamage = function(moveData, game, trainerName, otherName) {
   },
 
   getTypeMultiplier = function(types) {
-    return pokeapi.getAttackMultiplier(moveData.type.name, types[0], types[1])
+    return pokeapi.getAttackMultiplier(moveData.type, types[0], types[1])
     .then( function(_multiplier) { multiplier = _multiplier; } )
   },
 
@@ -491,7 +491,7 @@ var doDamage = function(moveData, game, trainerName, otherName) {
 
     var stab = 1;
     attackingPokemon.types.forEach(function( type ) {
-      if( type.name == moveData.type.name ) {
+      if( type.name == moveData.type ) {
         stab = 1.5;
       }
     });
