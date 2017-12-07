@@ -23,4 +23,4 @@ pipelines:
              - ssh $USER@rejectcode.com "ln -sfn ~/${FOLDER} ~/pkmn_app"
       - step:
           script:
-             - ssh $USER@rejectcode.com "cd ~/pkmn_app; npm install; PORT=${PORT}; TOKEN=${TOKEN}; REDIS_URL=${REDIS_URL}; npm start"
+             - ssh $USER@rejectcode.com "cd ~/pkmn_app; npm install; env PORT=\"${PORT}\" TOKEN=\"${TOKEN}\" REDIS_URL=\"${REDIS_URL}\" npm start"
