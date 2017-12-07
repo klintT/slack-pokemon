@@ -78,9 +78,9 @@ module.exports.getAttackMultiplier = function(offensive, defensive1, defensive2)
     P.getTypeByName(offensive.toLowerCase())
       .then(function(typeData) {
         var d = typeData,
-            ineffective = d.ineffective.map(function(val){return val.name}),
-            noeffect = d.no_effect.map(function(val){return val.name}),
-            supereffective = d.super_effective.map(function(val){return val.name});
+            ineffective = d.damage_relations.half_damage_to.map(function(val){return val.name}),
+            noeffect = d.damage_relations.no_damage_to.map(function(val){return val.name}),
+            supereffective = d.damage_relations.double_damage_to.map(function(val){return val.name});
         [defensive1, defensive2].forEach(function(type){
           if(ineffective.indexOf(type) !== -1) { multiplier *= 0.5; }
           if(noeffect.indexOf(type) !== -1) { multiplier *= 0; }
