@@ -10,8 +10,8 @@
   "dependencies": {
     "body-parser": "*",
     "express": ">=4.0.0",
-    "q": ">=1.0.1",
-    "redis": ">= 0.10.3",
+    "q": "^2.0.3",
+    "redis": "^2.8.0",
     "request": "*"
   },
   "engines": {
@@ -33,7 +33,5 @@
     "Zeke Sikelianos <zeke@sikelianos.com> (http://zeke.sikelianos.com)"
   ],
   "license": "MIT",
-  "devDependencies": {
-    "q": ">=1.0.1"
-  }
+  "devDependencies": {}
 }
