@@ -1,5 +1,3 @@
-
-console.log("Token: " + process.env.TOKEN);
 var express = require('express'),
     bodyParser = require('body-parser'),
     // Handle user commands

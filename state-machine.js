@@ -1,4 +1,3 @@
-console.log("redis: " + process.env.REDIS_URL);
 var moves = require('./file-system.js'),
     Game = require('./models/Game_mdl.js'),
     Q = require('q');
@@ -8,11 +7,9 @@ var moves = require('./file-system.js'),
 * redis = require("redis").createClient();
 */
 var redis, redisUrl = process.env.REDISTOGO_URL || process.env.REDIS_URL;
-console.log("redis: " + process.env.REDIS_URL);
 if(redisUrl) {
   var {URL} = require("url")
   var rtg   = new URL(redisUrl);
-  console.log("pass: " + rtg.password)
   redis = require("redis").createClient(
     {
       port: rtg.port, 
@@ -20,11 +17,6 @@ if(redisUrl) {
       password: rtg.password
     }
   );
-
-  // if (rtg.password) {
-  //   console.log("pass: " + rtg.password)
-  //   redis.auth(rtg.password);
-  // }
 } else {
   //then we're running locally
   redis = require("redis").createClient();
