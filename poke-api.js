@@ -36,15 +36,16 @@ module.exports.getSprite = function(url) {
 }
 
 module.exports.getMove = function(urlPart) {
-  return 
-    Q(P.resource(urlPart))
-      .then(function(data) {
-        return data;
-      })
-      .catch(function(error) {
-        console.log(error);
-        throw new Error("Error Getting Move");
-      });
+  var deferred = Q.defer();
+  P.resource(urlPart, function(data, error) {
+    if (!error) {
+      deferred.resolve(data);
+    } else {
+      console.log(error);
+      deferred.reject(new Error("Error Getting Move"));
+    }
+  })
+  return deferred.promise;
 }
 
 /*
