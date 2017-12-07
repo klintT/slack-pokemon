@@ -10,12 +10,19 @@ var redis, redisUrl = process.env.REDISTOGO_URL || process.env.REDIS_URL;
 if(redisUrl) {
   var {URL} = require("url")
   var rtg   = new URL(redisUrl);
-  redis = require("redis").createClient(rtg.port, rtg.hostname);
+  console.log("pass: " + rtg.password)
+  redis = require("redis").createClient(
+    {
+      port: rtg.port, 
+      host: rtg.hostname,
+      password: rtg.password
+    }
+  );
 
-  if (rtg.password) {
-    console.log("pass: " + rtg.password)
-    redis.auth(rtg.password);
-  }
+  // if (rtg.password) {
+  //   console.log("pass: " + rtg.password)
+  //   redis.auth(rtg.password);
+  // }
 } else {
   //then we're running locally
   redis = require("redis").createClient();
