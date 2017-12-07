@@ -5,5 +5,5 @@ if [ "$pkExist" = "[]" ]; then
 else 
     # Remove the old one first
     pm2 delete "Slack Pokemon"
-    pm2 restart --update-env "Slack Pokemon"
+    pm2 start index.js --name="Slack Pokemon"
 fi
