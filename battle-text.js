@@ -100,11 +100,15 @@ module.exports.choosePokemon = function(_game, _trainer, pokemon) {
 
   setTextString = function(){
     var displayName = (trainer.isNpc) ? 'I choose' : trainer.name + ' chooses';
-    var textString = "{chooseMessage} {pkmnn}. It has {hp} HP, and knows {moves}";
+    var textString = "{chooseMessage} {pkmnn}. It has {hp} HP, {a} ATK, {d} DEF, {sa} SPATK, {sd} SPDEF and knows {moves}";
 
     textString = textString.replace("{chooseMessage}", displayName);
     textString = textString.replace("{pkmnn}", pokeData.name);
     textString = textString.replace("{hp}", pokeData.hp);
+    textString = textString.replace("{a}", pokeData.attack);
+    textString = textString.replace("{d}", pokeData.defense);
+    textString = textString.replace("{sa}", pokeData.sp_attack);
+    textString = textString.replace("{sd}", pokeData.sp_defense);
     textString = textString.replace("{moves}", pokeData.moveString);
 
     var spriteUrl = pokeData.default_sprite;
@@ -251,7 +255,7 @@ var decideMoves = function(game, moveName, results) {
         if(nextPoke){
           result.text += '\n' + result.fainted.pokeName + ' fainted! \n';
           result.text += 'I choose '+ nextPoke.name +'! \n';
-          result.text += getSpriteUrl(nextPoke.dex_no);
+          result.text += nextPoke.default_sprite;//getSpriteUrl(nextPoke.id);
         } else {
           result.loser = result.fainted.trainerName;
         }
@@ -308,16 +312,16 @@ function _getMoveFromPokeApi(moveList, i, totalMoves, maxMoves, game, trainerNam
   return pokeapi.getMove(moveList[i].name)
     .then(function (move) {
       var pchain = Q();
-      move.type = moves.getMoveType(move.name.toLowerCase());
+      //move.type = moves.getMoveType(move.name.toLowerCase());
 
-      if (move.power == 0) {
+      if (!move.power) {
         //console.log('Filtered out move: ', data);
         // Filter out moves that do no damage right now.
         // TODO: add back in later when effects are calculated
       } else {
         //console.log('adding move: ', data.name, 'power: ', data.power);
         pchain.then(function() { game.addAllowedMove(trainerName, pokemonName, move); });
-        totalMoves.push(moveList[i].name);
+        totalMoves.push(moveList[i].name + "[" + move.power + ":" + move.damage_class.name + ":" + move.type.name + "]");
       }
 
       if (totalMoves.length < maxMoves) {
@@ -454,7 +458,7 @@ var doDamage = function(moveData, game, trainerName, otherName) {
   },
 
   getTypeMultiplier = function(types) {
-    return pokeapi.getAttackMultiplier(moveData.type, types[0], types[1])
+    return pokeapi.getAttackMultiplier(moveData.type.name, types[0], types[1])
     .then( function(_multiplier) { multiplier = _multiplier; } )
   },
 
@@ -473,16 +477,16 @@ var doDamage = function(moveData, game, trainerName, otherName) {
     wasCritical = (Math.floor(Math.random() * 16) === 1);
   },
 
-  getDamageType = function() {
-    var type = moves.getDamageType( moveData.name );
-    if( ~type.indexOf('Special') ) {
-      damageType = 'Special';
-    } else if( ~type.indexOf('Physical') ) {
-      damageType = 'Physical';
-    } else {
-      damageType = 'Effect';
-    }
-  },
+  // getDamageType = function() {
+  //   var type = moveData.damage_class.name;//moves.getDamageType( moveData.name );
+  //   if( type === "special" ) {
+  //     damageType = 'Special';
+  //   } else if( type === 'physical' ) {
+  //     damageType = 'Physical';
+  //   } else {
+  //     damageType = 'Effect';
+  //   }
+  // },
 
   calcDamage = function() {
     if( moveData.power == 0 ) {
@@ -491,7 +495,7 @@ var doDamage = function(moveData, game, trainerName, otherName) {
 
     var stab = 1;
     attackingPokemon.types.forEach(function( type ) {
-      if( type.name == moveData.type ) {
+      if( type.type.name == moveData.type.name ) {
         stab = 1.5;
       }
     });
@@ -505,14 +509,31 @@ var doDamage = function(moveData, game, trainerName, otherName) {
     var level = 5;
     var levelModifier = ( ( 2 * level + 10 ) / 250 );
 
-    var attackDefenseRatio;
-    if( damageType == 'Physical' ) {
+    var attackDefenseRatio = 1.0;
+    if( moveData.damage_class.name == 'physical' ) {
       attackDefenseRatio = (attackingPokemon.attack / defendingPokemon.defense);
     } else {
       attackDefenseRatio = (attackingPokemon.sp_attack / defendingPokemon.sp_defense);
     }
 
     var damage = ( levelModifier * attackDefenseRatio * moveData.power + 2) * modifier;
+    // console.log({
+    //   a_pokemon: attackingPokemon.name,
+    //   a_attack: attackingPokemon.attack,
+    //   a_defense: attackingPokemon.defense,
+    //   a_sp_attack: attackingPokemon.sp_attack,
+    //   a_sp_defense: attackingPokemon.sp_defense,
+    //   d_pokemon: defendingPokemon.name,
+    //   d_attack: defendingPokemon.attack,
+    //   d_defense: defendingPokemon.defense,
+    //   d_sp_attack: defendingPokemon.sp_attack,
+    //   d_sp_defense: defendingPokemon.sp_defense,
+    //   damage: damage, 
+    //   levelModifier: levelModifier, 
+    //   attackDefenseRatio: attackDefenseRatio,
+    //   modifier: modifier,
+    //   power: moveData.power
+    // });
     return Math.floor(damage);
   };
 
@@ -536,7 +557,7 @@ var doDamage = function(moveData, game, trainerName, otherName) {
   .then( getAttackingPokemon )
   .then( getDefendingPokemon )
   .then( checkCritical )
-  .then( getDamageType )
+  //.then( getDamageType )
   .then( calcDamage )
   .then( _doDamage )
   .then( reportResults )

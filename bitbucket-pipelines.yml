@@ -23,5 +23,5 @@ pipelines:
              - ssh $USER@rejectcode.com "mkdir ${FOLDER}"
              - scp -r [!.]* $USER@rejectcode.com:~/${FOLDER}/.
              - ssh $USER@rejectcode.com "ln -sfn ~/${FOLDER} ~/pkmn_app"
-             - ssh $USER@rejectcode.com "cd ~/pkmn_app; npm install; env PORT=\"${PORT}\" TOKEN=\"${TOKEN}\" REDIS_URL=\"${REDIS_URL}\" npm start"
+             - ssh $USER@rejectcode.com "cd ~/pkmn_app; npm install; env PORT=\"${PORT}\" TOKEN=\"${TOKEN}\" REDIS_URL=\"${REDIS_URL}\" sh start.sh"
              

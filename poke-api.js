@@ -5,7 +5,7 @@ var request = require('request'),
       protocol: 'https',
       hostName: 'pokeapi.co:443',
       versionPath: '/api/v2/',
-      timeout: 45 * 1000
+      timeout: 60 * 1000
     });
 
 module.exports = {}
@@ -14,22 +14,22 @@ module.exports.getPokemon = function(name) {
   return Q(
     P.getPokemonByName(name)
       .then(function (pkdata) {
-        console.log("pokemon found: ", pkdata);
         for (i = 0; i < pkdata.stats.length; i++) {
-          var stat = pkdata.stats[i];
-          if (stat.stat.name == "hp") {
-            pkdata.hp = stat.base_stat;
-          } else if (stat.stat.name == "attack") {
-            pkdata.attack = stat.base_stat;
-          } else if (stat.stat.name == "defense") {
-            pkdata.defense = stat.base_stat;
-          } else if (stat.stat.name == "special-attack") {
-            pkdata.sp_attack = stat.base_stat;
-          } else if (stat.stat.name == "special-defense") {
-            pkdata.sp_defense = stat.base_stat;
+          var statObj = pkdata.stats[i];
+          if (statObj.stat.name == "hp") {
+            pkdata.hp = statObj.base_stat;
+          } else if (statObj.stat.name == "attack") {
+            pkdata.attack = statObj.base_stat;
+          } else if (statObj.stat.name == "defense") {
+            pkdata.defense = statObj.base_stat;
+          } else if (statObj.stat.name == "special-attack") {
+            pkdata.sp_attack = statObj.base_stat;
+          } else if (statObj.stat.name == "special-defense") {
+            pkdata.sp_defense = statObj.base_stat;
           }
         }
         pkdata.default_sprite = pkdata.sprites.front_default;
+        console.log("pokemon found: ", pkdata);
         return pkdata;
       })
       .catch(function(error) {
